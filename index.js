@@ -1,7 +1,3 @@
-// import Telegraf from 'telegraf'
-// import express from 'express'
-// import Client from 'pg'
-
 const { Telegraf } = require('telegraf')
 const express = require('express')
 const { Client } = require('pg')
@@ -9,8 +5,8 @@ const { Client } = require('pg')
 const expressApp = express()
 
 
-const PORT = process.env.PORT
-const URL = process.env.URL
+const PORT = process.env.PORT || 3000
+const URL = process.env.URL || 'https://rankkabot.herokuapp.com/'
 const BOT_TOKEN = process.env.BOT_TOKEN
 const DATABASE_URL = process.env.DATABASE_URL
 
