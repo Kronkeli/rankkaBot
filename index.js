@@ -255,12 +255,13 @@ bot.on('text', (ctx) => {
 process.once('SIGINT', () => bot.stop('SIGINT'))
 process.once('SIGTERM', () => bot.stop('SIGTERM'))
 
-bot.launch()
-// // Start the server on PORT
-// expressApp.get('/', (req, res) => {
-//     res.send('Hello from rankkabot');
-// });
+// bot.launch()
 
-// expressApp.listen(PORT, () => {
-//     console.log(`Server running on port ${PORT}`);
-// });
+// Start the server on PORT
+expressApp.get('/', (req, res) => {
+    res.send('Hello from rankkabot');
+});
+
+expressApp.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
