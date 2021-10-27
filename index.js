@@ -209,20 +209,22 @@ bot.on('text', (ctx) => {
             }
         }
 
-        // Listaa tehtävät (toimii vain ADMIN tai privassa)
-        if ( message.includes('/listaa_tehtavat')) {
-            if (!isAdmin(ctx.message.from.username)) {
-                ctx.telegram.sendMessage(ctx.message.chat.id, "Tämä vaati jumaloikeudet, mutta käy kysymässä botilta privatessa ;)")
-            }
-            else if ( ctx.chat.type == "private") {
+    }
+
+    // Public text-type commands
+    // Listaa tehtävät (toimii vain ADMIN tai privassa)
+    if ( message.includes('/listaa_tehtavat')) {
+        if ( ctx.chat.type == "private") {
             client
                 .query('SELECT * FROM tehtavakuvaukset ORDER BY id;')
                 .then( res => laheta_tehtavat(res, ctx) )
                 .catch(e => console.log(e.stack))
-            }
-            else {
-                ctx.telegram.sendMessage(ctx.message.chat.id, "Nyt tämä toiminto jopa toimii privatessa!")
-            }
+        }
+        else if (!isAdmin(ctx.message.from.username)) {
+            ctx.telegram.sendMessage(ctx.message.chat.id, "Tämä vaatii jumaloikeudet, mutta käy kysymässä botilta privatessa ;)")
+        }
+        else {
+            ctx.telegram.sendMessage(ctx.message.chat.id, "Nyt tämä toiminto jopa toimii privatessa!")
         }
     }
 })
