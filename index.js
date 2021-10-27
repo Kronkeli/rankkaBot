@@ -21,28 +21,6 @@ const client = new Client({
   }
 })
 
-// Tehtavat luokitellaan seuraavasti
-// 1. Osallistu Murata-visaan bussissa
-// 2. Kerro bussissa vitsi                                      (ADMIN)
-// 3. Lähetä kuva itsestäsi/porukasta tg-ryhmään
-// 4. Kirjoita python-komento, jolla tulostetaan "Hello world!" 
-// 5. Ota kuva rubikin kuutiosta
-// 6. Kellota kalja tai hiilihapollinen juoma
-// 7. Arvo itsellesi random drinkki komennolla /random_drink tai /random_drink_holiton                                            (ADMIN)
-// 8. Ota kuva toisen Resonanssin opiskelijan kanssa ja postaa ryhmään (ADMIN)
-// 10. Selviä majoitukseen Helsingissä
-// 11. Herää ennen klo 8:15, ja laita viesti "Huomenta kaikki!" ryhmään  (ADMIN)
-// 12. Kirjoita anagrammi sanasta tanopuli botille privassa
-// 13. Osallistu Vaisala-visaan
-// 14. Osallistu Okmetic-visaan
-// 15. Osallistu Smartbi-visaan
-// 16. Ota kuva Hiukkasen värisestä esineestä (ei bussissa)
-// 17. Ota kuva Prosessikillan opiskelijan kanssa
-// 18. Ota kuva Ketekin opiskelijan kanssa
-// 19. Tanssi 'hiukkastanssia' baarissa
-// 20. Selviä majoitukseen Lappeenrannassa
-// 21. 
-
 const tehtava_kuvaukset = [
     "Osallistu Murata-visaan bussissa",
     "Kerro bussissa vitsi",                        
@@ -196,21 +174,8 @@ bot.command('rankalle', (ctx) => {
 // Lähettää chattiin tämänhetkisen tilanteen
 bot.command("tulokset_kaikki", (ctx) => {
     client
-        .query('SELECT username, SUM(piste) pisteet FROM pistetaulukko GROUP BY username')
+        .query('SELECT username, SUM(piste) pisteet FROM pistetaulukko GROUP BY username ORDER BY pisteet DESC')
         .then(res => laheta_tulokset_kaikki(res, ctx))
-})
-
-// Listaa tehtävät (toimii vain ADMIN tai privassa)
-bot.command("listaa_tehtavat", (ctx) => {
-    if (!isAdmin(ctx.message.from.username)) {
-        ctx.telegram.sendMessage(ctx.message.chat.id, "Tämä vaati jumaloikeudet, mutta käy kysymässä botilta privatessa ;)")
-    }
-    else {
-    client
-        .query('SELECT * FROM tehtavakuvaukset ORDER BY id;')
-        .then( res => laheta_tehtavat(res, ctx) )
-        .catch(e => console.log(e.stack))
-    }
 })
 
 bot.on('text', (ctx) => {
@@ -243,7 +208,22 @@ bot.on('text', (ctx) => {
                 }
             }
         }
-        
+
+        // Listaa tehtävät (toimii vain ADMIN tai privassa)
+        if ( message.includes('/listaa_tehtavat')) {
+            if (!isAdmin(ctx.message.from.username)) {
+                ctx.telegram.sendMessage(ctx.message.chat.id, "Tämä vaati jumaloikeudet, mutta käy kysymässä botilta privatessa ;)")
+            }
+            else if ( ctx.chat.type == "private") {
+            client
+                .query('SELECT * FROM tehtavakuvaukset ORDER BY id;')
+                .then( res => laheta_tehtavat(res, ctx) )
+                .catch(e => console.log(e.stack))
+            }
+            else {
+                ctx.telegram.sendMessage(ctx.message.chat.id, "Nyt tämä toiminto jopa toimii privatessa!")
+            }
+        }
     }
 })
 
